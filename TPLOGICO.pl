@@ -24,6 +24,7 @@ quienTrabaja(georga):-
 esFiel(Persona):-
 not(tieneMasDeUnaPareja(Persona)).
 
+% Funciones Auxiliares:
 tieneMasDeUnaPareja(Persona):-
 	pareja(Persona, Amor1),
 	pareja(Persona, Amor2),
