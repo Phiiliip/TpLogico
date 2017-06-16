@@ -8,23 +8,27 @@ pareja(bernardo, chiaro).
 trabajaPara(marsellus, vincent).
 trabajaPara(marsellus, jules).
 trabajaPara(marsellus, winston).
+trabajaPara(vincent, bernardo).
+trabajaPara(winston,bernardo).
+trabajaPara(bianca, george).
+trabajaPara(chiaro, george).
 
 saleCon(Persona1, Persona2) :-
-	pareja(Persona1, Persona2).
+	pareja(Persona1, Persona2),
+	Persona1 \= Persona2.
 
+saleCon(Persona2, Persona1) :-
+	pareja(Persona1, Persona2),
+	Persona2 \= Persona1.
 
-trabajaPara(Empleador, Empleado):-
-	quienTrabaja(Empleado)
-
-quienTrabaja(bernardo):-
-	forall()
-
-quienTrabaja(georga):-
+trabajarPara(Empleador, Empleado):-
+	trabajaPara(Empleador, Empleado).
 
 esFiel(Persona):-
 not(tieneMasDeUnaPareja(Persona)).
 
 % Funciones Auxiliares:
+
 tieneMasDeUnaPareja(Persona):-
 	pareja(Persona, Amor1),
 	pareja(Persona, Amor2),
