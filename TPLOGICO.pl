@@ -13,26 +13,44 @@ trabajaPara(winston,bernardo).
 trabajaPara(bianca, george).
 trabajaPara(chiaro, george).
 
-saleCon(Persona1, Persona2) :-
+
+% saleCon/2 :
+
+saleCon(Persona1, Persona2) :-       % Caso Base
 	pareja(Persona1, Persona2),
 	Persona1 \= Persona2.
 
-saleCon(Persona2, Persona1) :-
+saleCon(Persona2, Persona1) :-       % Caso Recursivo
 	pareja(Persona1, Persona2),
-	Persona2 \= Persona1.
+	saleCon(Persona1, Persona2).
 
 trabajarPara(Empleador, Empleado):-
 	trabajaPara(Empleador, Empleado).
 
-esFiel(Persona):-
-not(tieneMasDeUnaPareja(Persona)).
 
-% Funciones Auxiliares:
+% esFiel/1:
+
+esFiel(Persona):-
+	saleCon(Persona,_),
+	not(tieneMasDeUnaPareja(Persona)).
+
+% Predicados Auxiliar:
 
 tieneMasDeUnaPareja(Persona):-
 	pareja(Persona, Amor1),
 	pareja(Persona, Amor2),
 	Amor1 \= Amor2.
+
+
+% acataOrden/2:
+
+acataOrden(Persona, Jefe) :-          % Caso Base
+	trabajaPara(Jefe, Persona).
+
+acataOrden(OtraPersona, Jefe) :-      % Caso Recursivo
+	trabajaPara(JefeDeOtraPersona, OtraPersona),
+	acataOrden(JefeDeOtraPersona, Jefe).
+
 
 %personaje(Nombre, Ocupacion).
 personaje(pumkin,     ladron([estacionesDeServicio, licorerias])).
@@ -62,12 +80,17 @@ amigo(vincent, jules).
 amigo(jules, jimmie).
 amigo(vincent, elVendedor).
 
+
+% esPeligroso/1:
+
 esPeligroso(Personaje) :-
 	realizaActividadPeligrosa(Personaje).
 
 esPeligroso(Personaje) :-
-	encargo(Personaje,Jefe,_),
+	trabajaPara(Jefe, Personaje),
 	realizaActividadPeligrosa(Jefe).
+
+% Predicados Auxiliar:
 
 realizaActividadPeligrosa(Personaje) :-
 	personaje(Personaje, mafioso(maton)).
@@ -79,3 +102,27 @@ realizaActividadPeligrosa(Personaje) :-
 % sanCayetano(Personaje) :- forall(losTieneCerca(Personaje), encargo(_,Personaje,_)).
 
 % losTieneCerca(Personaje) :- findall(Cerca,amigo(Personaje,Amigo),AmigosCerca).
+
+
+% nivelRespeto/2:
+
+nivelRespeto(Personaje, Respeto) :-
+	personaje(Personaje,_),
+	respetoDe(Personaje, Respeto).
+
+nivelRespeto(vincent, 15).
+
+% Predicados Auxiliares:
+
+respetoDe(Personaje, Respeto) :-
+	personaje(Personaje, actriz(Peliculas)),
+	length(Peliculas, CantDePeliculas),
+	Respeto is CantDePeliculas / 10.
+
+respetoDe(Personaje, Respeto) :-
+	personaje(Personaje, mafioso(resuelveProblemas)),
+	Respeto is 10.
+
+respetoDe(Personaje, Respeto) :-
+	personaje(Personaje, mafioso(capo)),
+	Respeto is 20.
