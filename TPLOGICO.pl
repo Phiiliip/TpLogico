@@ -101,8 +101,14 @@ realizaActividadPeligrosa(Personaje) :-
 
 % sanCayetano(Personaje) :- forall(losTieneCerca(Personaje), encargo(_,Personaje,_)).
 
-% losTieneCerca(Personaje) :- findall(Cerca,amigo(Personaje,Amigo),AmigosCerca).
+alguienCerca(Personaje) :- 
+	amigo(Persona, Alguien).
 
+alguienCerca(Personaje) :-
+	trabajaPara(Empleador, Personaje).
+
+alguienCerca(Personaje) :-
+	trabajaPara(Personaje, Empleado).
 
 % nivelRespeto/2:
 
