@@ -13,7 +13,6 @@ trabajaPara(winston,bernardo).
 trabajaPara(bianca, george).
 trabajaPara(chiaro, george).
 
-
 % saleCon/2 :
 
 saleCon(Persona1, Persona2) :-       % Caso Base
@@ -27,20 +26,11 @@ saleCon(Persona2, Persona1) :-       % Caso Recursivo
 trabajarPara(Empleador, Empleado):-
 	trabajaPara(Empleador, Empleado).
 
-
 % esFiel/1:
 
 esFiel(Persona):-
 	saleCon(Persona,_),
 	not(tieneMasDeUnaPareja(Persona)).
-
-% Predicados Auxiliar:
-
-tieneMasDeUnaPareja(Persona):-
-	pareja(Persona, Amor1),
-	pareja(Persona, Amor2),
-	Amor1 \= Amor2.
-
 
 % acataOrden/2:
 
@@ -51,6 +41,14 @@ acataOrden(OtraPersona, Jefe) :-      % Caso Recursivo
 	trabajaPara(JefeDeOtraPersona, OtraPersona),
 	acataOrden(JefeDeOtraPersona, Jefe).
 
+% Predicados Auxiliar:
+
+tieneMasDeUnaPareja(Persona):-
+	pareja(Persona, Amor1),
+	pareja(Persona, Amor2),
+	Amor1 \= Amor2.
+
+% Parte 2:
 
 %personaje(Nombre, Ocupacion).
 personaje(pumkin,     ladron([estacionesDeServicio, licorerias])).
@@ -80,7 +78,6 @@ amigo(vincent, jules).
 amigo(jules, jimmie).
 amigo(vincent, elVendedor).
 
-
 % esPeligroso/1:
 
 esPeligroso(Personaje) :-
@@ -90,19 +87,11 @@ esPeligroso(Personaje) :-
 	trabajaPara(Jefe, Personaje),
 	realizaActividadPeligrosa(Jefe).
 
-% Predicados Auxiliar:
+% San Cayetano/1:
 
-realizaActividadPeligrosa(Personaje) :-
-	personaje(Personaje, mafioso(maton)).
-
-realizaActividadPeligrosa(Personaje) :-
-	personaje(Personaje, ladron(Lugares)),
-	member(licorerias, Lugares).
-
-% sanCayetano(Personaje) :- forall(losTieneCerca(Personaje), encargo(_,Personaje,_)).
-
-% losTieneCerca(Personaje) :- findall(Cerca,amigo(Personaje,Amigo),AmigosCerca).
-
+sanCayetano(Personaje) :- 
+	alguienCerca(Personaje, _),
+	forall(alguienCerca(Personaje, Alguien), encargo(Personaje,Alguien,_)).
 
 % nivelRespeto/2:
 
@@ -111,6 +100,16 @@ nivelRespeto(Personaje, Respeto) :-
 	respetoDe(Personaje, Respeto).
 
 nivelRespeto(vincent, 15).
+
+% respetabilidad:
+
+respetabilidad(Respetables, NoRespetables) :-
+	sonRespetables(Respetables),
+	noSonRespetables(NoRespetables).
+
+% masAtareado/1:
+
+% masAtareado(Personaje) :-
 
 % Predicados Auxiliares:
 
@@ -127,14 +126,17 @@ respetoDe(Personaje, Respeto) :-
 	personaje(Personaje, mafioso(capo)),
 	Respeto is 20.
 
+alguienCerca(Personaje, Alguien) :- 
+	amigo(Personaje, Alguien).
 
-% Personajes Respetables (respetabilidad/2):
+alguienCerca(Personaje, Alguien) :-
+	trabajaPara(Alguien, Personaje).
 
-respetabilidad(Respetables, NoRespetables) :-
-	sonRespetables(Respetables),
-	noSonRespetables(NoRespetables).
+alguienCerca(Personaje, Alguien) :-
+	trabajaPara(Personaje, Alguien).
 
-% Predicados Auxiliares:
+alguienCerca(Personaje, Alguien) :-
+	amigo(Alguien, Personaje).
 
 sonRespetables(Respetables):-
 	findall(Personaje,tieneRespetoMayor(Personaje),ListaRespetables),
@@ -154,6 +156,13 @@ tieneRespetoMenor(Personaje) :-
 	nivelRespeto(Personaje,_),
 	not(tieneRespetoMayor(Personaje)).
 
-tieneRespetoMenor(Personaje) :-     % aquellos que nisiquiera tienen nivel de Respeto
+tieneRespetoMenor(Personaje) :-
 	personaje(Personaje,_),
 	not(nivelRespeto(Personaje,_)).
+
+realizaActividadPeligrosa(Personaje) :-
+	personaje(Personaje, mafioso(maton)).
+
+realizaActividadPeligrosa(Personaje) :-
+	personaje(Personaje, ladron(Lugares)),
+	member(licorerias, Lugares).
