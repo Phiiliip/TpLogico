@@ -13,6 +13,7 @@ trabajaPara(winston,bernardo).
 trabajaPara(bianca, george).
 trabajaPara(chiaro, george).
 
+
 % saleCon/2 :
 
 saleCon(Persona1, Persona2) :-       % Caso Base
@@ -26,11 +27,13 @@ saleCon(Persona2, Persona1) :-       % Caso Recursivo
 trabajarPara(Empleador, Empleado):-
 	trabajaPara(Empleador, Empleado).
 
+
 % esFiel/1:
 
 esFiel(Persona):-
 	saleCon(Persona,_),
 	not(tieneMasDeUnaPareja(Persona)).
+
 
 % acataOrden/2:
 
@@ -41,12 +44,14 @@ acataOrden(OtraPersona, Jefe) :-      % Caso Recursivo
 	trabajaPara(JefeDeOtraPersona, OtraPersona),
 	acataOrden(JefeDeOtraPersona, Jefe).
 
+
 % Predicados Auxiliar:
 
 tieneMasDeUnaPareja(Persona):-
 	pareja(Persona, Amor1),
 	pareja(Persona, Amor2),
 	Amor1 \= Amor2.
+
 
 % Parte 2:
 
@@ -78,6 +83,7 @@ amigo(vincent, jules).
 amigo(jules, jimmie).
 amigo(vincent, elVendedor).
 
+
 % esPeligroso/1:
 
 esPeligroso(Personaje) :-
@@ -87,11 +93,13 @@ esPeligroso(Personaje) :-
 	trabajaPara(Jefe, Personaje),
 	realizaActividadPeligrosa(Jefe).
 
+
 % San Cayetano/1:
 
 sanCayetano(Personaje) :- 
 	alguienCerca(Personaje, _),
 	forall(alguienCerca(Personaje, Alguien), encargo(Personaje,Alguien,_)).
+
 
 % nivelRespeto/2:
 
@@ -101,15 +109,24 @@ nivelRespeto(Personaje, Respeto) :-
 
 nivelRespeto(vincent, 15).
 
+
 % respetabilidad:
 
 respetabilidad(Respetables, NoRespetables) :-
 	sonRespetables(Respetables),
 	noSonRespetables(NoRespetables).
 
+
 % masAtareado/1:
 
-% masAtareado(Personaje) :-
+masAtareado(Personaje) :-
+
+cantidadEncargos(Personaje, EncargosTotales) :-
+	personaje(Personaje,_),
+	findall(Encargo,encargo(_,Personaje,Encargo),ListaDeEncargos),
+	length(ListaDeEncargos, CantEncargos),
+	EncargosTotales is CantEncargos.
+
 
 % Predicados Auxiliares:
 
