@@ -64,7 +64,7 @@ personaje(bianca,     actriz([elPadrino1])).
 personaje(elVendedor, vender([humo, iphone])).
 personaje(jimmie,     vender([auto])).
 
-%encargo(Solicitante,Encargado,Tarea). 
+%encargo(Solicitante,Encargado,Tarea).
 encargo(marsellus, vincent,   cuidar(mia)).
 encargo(vincent,  elVendedor, cuidar(mia)).
 encargo(marsellus, winston, ayudar(jules)).
@@ -81,7 +81,13 @@ amigo(vincent, elVendedor).
 % esPeligroso/1:
 
 esPeligroso(Personaje) :-
-	realizaActividadPeligrosa(Personaje).
+	personaje(Personaje,Actividad),
+	actividadPeligrosa(Actividad).
+
+actividadPeligrosa(mafioso(maton)).
+actividadPeligrosa(ladron(Lista)):-
+	member(licorerias,Lista).
+
 
 esPeligroso(Personaje) :-
 	trabajaPara(Jefe, Personaje),
@@ -89,15 +95,15 @@ esPeligroso(Personaje) :-
 
 % San Cayetano/1:
 
-sanCayetano(Personaje) :- 
+sanCayetano(Personaje) :-
 	alguienCerca(Personaje, _),
 	forall(alguienCerca(Personaje, Alguien), encargo(Personaje,Alguien,_)).
 
 % nivelRespeto/2:
 
 nivelRespeto(Personaje, Respeto) :-
-	personaje(Personaje,_),
-	respetoDe(Personaje, Respeto).
+	personaje(Personaje,Actividad),
+	respetoDe(Actividad, Respeto).
 
 nivelRespeto(vincent, 15).
 
@@ -109,7 +115,9 @@ respetabilidad(Respetables, NoRespetables) :-
 
 % masAtareado/1:
 
-% masAtareado(Personaje) :-
+masAtareado(Personaje) :-
+	cantidadEncargos(Personaje, EncargosTotales),
+	forall(cantidadEncargos(_, OtraCantidad), EncargosTotales >= OtraCantidad).
 
 cantidadEncargos(Personaje, EncargosTotales) :-
 	personaje(Personaje,_),
@@ -118,20 +126,15 @@ cantidadEncargos(Personaje, EncargosTotales) :-
 
 % Predicados Auxiliares:
 
-respetoDe(Personaje, Respeto) :-
-	personaje(Personaje, actriz(Peliculas)),
+respetoDe(actriz(Peliculas), Respeto) :-
 	length(Peliculas, CantDePeliculas),
 	Respeto is CantDePeliculas / 10.
 
-respetoDe(Personaje, Respeto) :-
-	personaje(Personaje, mafioso(resuelveProblemas)),
-	Respeto is 10.
+respetoDe(mafioso(resuelvaProblemas),10).
 
-respetoDe(Personaje, Respeto) :-
-	personaje(Personaje, mafioso(capo)),
-	Respeto is 20.
+respetoDe(mafioso(capo), 20).
 
-alguienCerca(Personaje, Alguien) :- 
+alguienCerca(Personaje, Alguien) :-
 	amigo(Personaje, Alguien).
 
 alguienCerca(Personaje, Alguien) :-
