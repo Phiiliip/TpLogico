@@ -101,14 +101,8 @@ realizaActividadPeligrosa(Personaje) :-
 
 % sanCayetano(Personaje) :- forall(losTieneCerca(Personaje), encargo(_,Personaje,_)).
 
-alguienCerca(Personaje) :- 
-	amigo(Persona, Alguien).
+% losTieneCerca(Personaje) :- findall(Cerca,amigo(Personaje,Amigo),AmigosCerca).
 
-alguienCerca(Personaje) :-
-	trabajaPara(Empleador, Personaje).
-
-alguienCerca(Personaje) :-
-	trabajaPara(Personaje, Empleado).
 
 % nivelRespeto/2:
 
@@ -132,3 +126,34 @@ respetoDe(Personaje, Respeto) :-
 respetoDe(Personaje, Respeto) :-
 	personaje(Personaje, mafioso(capo)),
 	Respeto is 20.
+
+
+% Personajes Respetables (respetabilidad/2):
+
+respetabilidad(Respetables, NoRespetables) :-
+	sonRespetables(Respetables),
+	noSonRespetables(NoRespetables).
+
+% Predicados Auxiliares:
+
+sonRespetables(Respetables):-
+	findall(Personaje,tieneRespetoMayor(Personaje),ListaRespetables),
+	length(ListaRespetables, CantRespetables),
+	Respetables is CantRespetables.
+
+noSonRespetables(NoRespetables) :-
+	findall(Personaje,tieneRespetoMenor(Personaje),ListaNoRespetables),
+	length(ListaNoRespetables, CantNoRespetables),
+	NoRespetables is CantNoRespetables.
+
+tieneRespetoMayor(Personaje) :-
+	nivelRespeto(Personaje, Respeto),
+	Respeto > 9.
+
+tieneRespetoMenor(Personaje) :-
+	nivelRespeto(Personaje,_),
+	not(tieneRespetoMayor(Personaje)).
+
+tieneRespetoMenor(Personaje) :-     % aquellos que nisiquiera tienen nivel de Respeto
+	personaje(Personaje,_),
+	not(nivelRespeto(Personaje,_)).
